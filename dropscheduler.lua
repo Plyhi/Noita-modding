@@ -31,11 +31,34 @@ function queue_spell_rain(cards, origin_eid, opts)
       -- Unique horizontal offset per item.
       SetRandomSeed(math.floor(px + frame0) + i * 131, math.floor(py) + i * 71)
       local dx = Randomf(-range_px * 0.5, range_px * 0.5)
+--------find a free position according to parallel position siries--------
+      local x_free, y_free = FindFreePositionForBody(px + dx,y_line,0,0,5)
 
+-------hit raytrace redius---------	
+      local safe_radius = 3
+
+    local directions = {
+    {0, -safe_radius},  -- up
+    {safe_radius, 0},   -- right  
+    {0, safe_radius},    -- down
+    {-safe_radius, 0}   -- left
+    }			
+-------if still hit then spawn at player--------
+    local is_safe = true
+      for _, dir in ipairs(directions) do
+   	local hit, hit_x, hit_y = Raytrace(x_free,  y_free, x_free + dir[1], y_free + dir[2])
+    	  if hit then
+        		is_safe = false
+		x_free = px
+		y_free = py
+        		break
+    	  end
+      end
+----------insert spell to table---------
       table.insert(drop_queue, {
         eid   = card,
-        x     = px + dx,
-        y     = y_line,
+        x     = x_free,
+        y     = y_free,
         frame = frame0 + math.floor((i - 1) / burst) * spacing
       })
     end
@@ -72,3 +95,4 @@ function process_drop_queue()
     end
   end
 end
+

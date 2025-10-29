@@ -78,7 +78,7 @@ function process_drop_queue()
         pcall(function() EntitySetComponentsWithTagEnabled(eid, "enabled_in_world", true) end)
         pcall(function() EntitySetComponentsWithTagEnabled(eid, "enabled_in_inventory", false) end)
         EntitySetTransform(eid, item.x, item.y)
-
+        pcall(function() EntitySetComponentsWithTagEnabled(eid, "item_unidentified", false) end)
         local item_comp = EntityGetFirstComponentIncludingDisabled(eid, "ItemComponent")
         if item_comp ~= nil then
           ComponentSetValue2(item_comp, "has_been_picked_by_player", false)
